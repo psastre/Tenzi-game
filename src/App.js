@@ -9,10 +9,14 @@ export default function App() {
     const [dice, setDice] = useState(allNewDice())
     const [tenzies, setTenzies] = useState(false)
     const [counter, setCounter] = useState(0)
+    const [prevBest, setPrevBest] = useState(Number(localStorage.getItem("best ranking") || "1500"))
+    const [prevBestTime, setPrevBestTime] = useState(Number(localStorage.getItem("best time") || "1500"))
+    const [toggle, setToggle]= useState(false)
+
+
 
     const [seconds, setSeconds]= useState(0);
     const [minutes, setMinutes]= useState(0);
-
     var timer;
     
 
@@ -31,8 +35,7 @@ export default function App() {
 
     return ()=>(clearInterval(timer)) }
     
-    //const pauseWin =()=>{tenzies && clearInterval(timer)}
-    //pauseWin()
+    
     
     useEffect(() => {
         const allHeld = dice.every(die => die.isHeld)
@@ -42,11 +45,42 @@ export default function App() {
             setTenzies(true)
             console.log("You won!")
         }
+        
     }, [dice])
 
+    useEffect(()=>{
+        
+        if(tenzies && counter<prevBest){
+            localStorage.setItem("best ranking", counter.toString())
+            setPrevBest(Number(localStorage.getItem("best ranking")))
+            localStorage.setItem("best time", count.toString())
+            setPrevBestTime(Number(localStorage.getItem("best time")))
+            
+        }
+        
+        
+    })
 
-   
+    
 
+    const [count, setCount] = useState(0);
+    const [intervalId, setIntervalId] = useState(0);
+    
+        const handleClick = () => {
+            if (intervalId) {
+              clearInterval(intervalId);
+              setIntervalId(0);
+              return;
+            }
+        
+            const newIntervalId = setInterval(() => {
+              setCount(prevCount => prevCount + 1);
+            }, 1000);
+            setIntervalId(newIntervalId);
+          };
+      
+
+    
     function generateNewDie() {
        
         return {
@@ -80,9 +114,12 @@ export default function App() {
         
         }))
           }else{
-            clearInterval(timer)
+            
             setTenzies(false)
             setDice(allNewDice())
+            setCounter(0-1)
+            
+           
           }
         }
   
@@ -108,12 +145,31 @@ export default function App() {
         setCounter(prevCounter => prevCounter+=1)
     }
 
-   
+   function NewGameButton(){
+    setDice(allNewDice())
+    setToggle(!toggle)
+    setCounter(0)
+    setCount(0)
     
-    
+   }
+   useEffect(() => {
+    if (tenzies) {
+      handleClick();
+    }
+  });
+ 
     
     return (
         <main>
+            <div className="menu" style={{display: toggle && "none"}}>
+                <h4>Best Score:</h4>
+                <p>{prevBest}</p>
+                <h4>Best Time:</h4>
+                <p>{prevBestTime}</p>
+               
+                <button onClick={()=>{NewGameButton();handleClick()}}>New Game</button>
+                <button onClick={()=>{setToggle(!toggle);handleClick()}}>Back to play</button>
+            </div>
             
             {tenzies && <Confetti />}
             <h1 className="title">Tenzies</h1>
@@ -125,7 +181,7 @@ export default function App() {
             <div className="buttons">
                 <button 
                     className="roll-dice" 
-                    onClick={()=>{rollDice();rollCounter();start()
+                    onClick={()=>{rollDice();rollCounter();start();
                     }}
                 >
                     {tenzies ? "New Game" : "Roll"}
@@ -133,11 +189,12 @@ export default function App() {
                 <button className='rolls-counter'>
                     {counter}
                 </button>
-                <button className='pause' onClick={pause}>
+                <button className='pause' onClick={()=>{setToggle(!toggle);handleClick()}}>
                     Pause
                 </button>
+                <p>{prevBest}</p>
                 <h4>
-                    {minutes<10 ? "0"+minutes:minutes}:{seconds<10 ? "0"+seconds:seconds}
+                   {count}
                 </h4>
             </div>
         </main>
