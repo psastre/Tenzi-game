@@ -24,13 +24,14 @@ main {
 .menu{
   position: absolute;
   margin: auto;
-  height: 65vh;
-  width: 40%;
-  background-color: rgba(0, 0, 0, 0.75);
-  border: 1px solid black;
+  height: 80vh;
+  width: 60%;
+  backdrop-filter: blur(10px);
+  
+  border: 1px solid rgb(79, 79, 79);
   border-radius: 15px;
   text-transform: uppercase;
-  color: #F5F5F5;
+  color: #302f2f;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -40,6 +41,10 @@ main {
 .menu h4{
   font-size: 2rem;
   margin-bottom: -0.5rem;
+}
+.menu p{
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 .menu button{
   margin-top: 2rem;
@@ -83,6 +88,12 @@ main {
 .die-num {
   font-size: 2rem;
 }
+.buttons{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
 .buttons button{
   margin: 0 1rem;
 }
@@ -108,6 +119,17 @@ main {
 .rolls-counter{
   height: 50px;
   width: 50px;
+  border: none;
+  border-radius: 6px;
+  background-color: #5035FF;
+  color: white;
+  font-size: 1.2rem;
+  font-family: 'Karla', sans-serif;
+  cursor: pointer;
+}
+.pause{
+  height: 50px;
+  width: 150px;
   border: none;
   border-radius: 6px;
   background-color: #5035FF;

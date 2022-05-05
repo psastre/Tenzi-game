@@ -9,9 +9,9 @@ export default function App() {
     const [dice, setDice] = useState(allNewDice())
     const [tenzies, setTenzies] = useState(false)
     const [counter, setCounter] = useState(0)
-    const [prevBest, setPrevBest] = useState(Number(localStorage.getItem("best ranking") || "1500"))
-    const [prevBestTime, setPrevBestTime] = useState(Number(localStorage.getItem("best time") || "1500"))
-    const [toggle, setToggle]= useState(false)
+    const [prevBest, setPrevBest] = useState(Number(localStorage.getItem("best ranking") || "100"))
+    const [prevBestTime, setPrevBestTime] = useState(Number(localStorage.getItem("best time") || "100"))
+    const [toggle, setToggle]= useState(true)
 
 
 
@@ -118,6 +118,9 @@ export default function App() {
             setTenzies(false)
             setDice(allNewDice())
             setCounter(0-1)
+            setCount(0)
+            
+
             
            
           }
@@ -147,21 +150,25 @@ export default function App() {
 
    function NewGameButton(){
     setDice(allNewDice())
-    setToggle(!toggle)
+    setToggle(prevState => !prevState)
     setCounter(0)
     setCount(0)
-    
+    setTenzies(false)
    }
-   useEffect(() => {
-    if (tenzies) {
-      handleClick();
-    }
-  });
+   
+   useEffect(()=>{
+       if(tenzies){
+        setToggle(prevState => !prevState)
+       }
+   },[dice])
  
     
     return (
         <main>
-            <div className="menu" style={{display: toggle && "none"}}>
+            {tenzies && <Confetti />}
+            
+            <div className="menu" style={{display: toggle||!tenzies && "none"}}>
+              
                 <h4>Best Score:</h4>
                 <p>{prevBest}</p>
                 <h4>Best Time:</h4>
@@ -169,9 +176,10 @@ export default function App() {
                
                 <button onClick={()=>{NewGameButton();handleClick()}}>New Game</button>
                 <button onClick={()=>{setToggle(!toggle);handleClick()}}>Back to play</button>
+                
             </div>
             
-            {tenzies && <Confetti />}
+            
             <h1 className="title">Tenzies</h1>
             <p className="instructions">Roll until all dice are the same. 
             Click each die to freeze it at its current value between rolls.</p>
@@ -186,16 +194,19 @@ export default function App() {
                 >
                     {tenzies ? "New Game" : "Roll"}
                 </button>
+                <div className="counters">
                 <button className='rolls-counter'>
+                    rolls:<br/>
                     {counter}
                 </button>
+                <button className='rolls-counter'>
+                    sec:<br/>
+                   {count}
+                </button>
+                </div>
                 <button className='pause' onClick={()=>{setToggle(!toggle);handleClick()}}>
                     Pause
                 </button>
-                <p>{prevBest}</p>
-                <h4>
-                   {count}
-                </h4>
             </div>
         </main>
     )
